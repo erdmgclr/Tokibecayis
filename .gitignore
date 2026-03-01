@@ -5,3 +5,7 @@ __pycache__/
 node_modules/
 .vscode/
 .DS_Store
+*.db
+tokibecayis.db
+__pycache__/
+.git/
