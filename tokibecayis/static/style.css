@@ -256,3 +256,25 @@ button{
   border-radius:50%;
   box-shadow: 0 0 0 2px rgba(2,6,23,.9);
 }
+
+/* ---- MOBİL NAVBAR TEK SATIR ---- */
+@media (max-width: 640px){
+  .topbar{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav{
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .nav a{
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+}
