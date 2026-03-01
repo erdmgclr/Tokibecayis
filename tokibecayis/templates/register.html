@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Kayıt</h2>
+
+  <div class="subcard">
+    <b>Önemli</b>
+    <ul class="muted">
+      <li>Bu sistem TOKİ becayiş ilanlarını eşleştirmek için tasarlanmıştır.</li>
+      <li>Kişisel veri (telefon, TC, adres, IBAN vb.) paylaşımı yasaktır. Sadece uygulama içi mesajlaşma kullanılır.</li>
+      <li>{{ inactivity_days }} gün giriş yapılmazsa ilanlar otomatik pasife alınır ve eşleşmeye dahil edilmez.</li>
+      <li><b>Şifre 5 kez yanlış girilirse</b> güvenlik amacıyla hesap ve tüm veriler (ilanlar/mesajlar) silinir. Yeniden kayıt gerekir.</li>
+    </ul>
+  </div>
+
+  <form method="post" class="stack" id="registerForm">
+    <label>Kullanıcı Adı</label>
+    <input name="username" id="username" minlength="3" required autocomplete="off">
+    <div id="usernameStatus" class="hint"></div>
+
+    <label>Şifre</label>
+    <input name="password" type="password" minlength="6" required>
+
+    <button type="submit" id="registerBtn">Kayıt Ol</button>
+  </form>
+
+  <p class="muted">Zaten hesabın var mı? <a href="{{ url_for('login') }}">Giriş Yap</a></p>
+</div>
+{% endblock %}

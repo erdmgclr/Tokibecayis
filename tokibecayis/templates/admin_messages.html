@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Admin - Mesajlar{% endblock %}
+{% block content %}
+  <h2>Konuşmalar</h2>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Thread</th>
+        <th>User1</th>
+        <th>User2</th>
+        <th>Last</th>
+        <th>Last Body</th>
+        <th>Detay</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in rows %}
+        <tr>
+          <td>{{ t.id }}</td>
+          <td>{{ t.user1_name }}</td>
+          <td>{{ t.user2_name }}</td>
+          <td>{{ t.last_message_at or t.created_at }}</td>
+          <td style="max-width:520px;white-space:pre-wrap">{{ t.last_body or '' }}</td>
+          <td><a class="btn" href="{{ url_for('admin_thread_view', thread_id=t.id) }}">Aç</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

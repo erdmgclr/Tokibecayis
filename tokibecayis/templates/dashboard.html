@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>İlanlarım</h2>
+
+  {% if not my_listings %}
+    <p class="muted">Henüz ilan yok. <a href="{{ url_for('listing_new') }}">Yeni ilan ekle</a>.</p>
+  {% else %}
+    <div class="list">
+      {% for l in my_listings %}
+        <div class="list-item">
+          <div class="list-title">
+            <b>{{ l["mevcut_il"] }}/{{ l["mevcut_ilce"] }} - {{ l["mevcut_mahalle"] }}</b>
+            <span class="pill">{{ l["mevcut_oda"] }}</span>
+            <span class="pill">Kat {{ l["mevcut_kat"] }}</span>
+            {% if l["is_active"] == 1 %}
+              <span class="pill ok">AKTİF</span>
+            {% else %}
+              <span class="pill warn">PASİF</span>
+            {% endif %}
+          </div>
+
+          <div class="list-actions">
+            <a class="btn ghost" href="{{ url_for('listing_edit', listing_id=l['id']) }}">Düzenle</a>
+
+            <form method="post" action="{{ url_for('listing_toggle_active', listing_id=l['id']) }}">
+              <button class="btn" type="submit">
+                {% if l["is_active"] == 1 %}Pasife Al{% else %}Aktif Et{% endif %}
+              </button>
+            </form>
+
+            <a class="btn ghost" href="{{ url_for('show_matches', listing_id=l['id']) }}">Eşleşmeler</a>
+
+            <form method="post" action="{{ url_for('listing_delete', listing_id=l['id']) }}"
+                  onsubmit="return confirm('İlan silinsin mi?')">
+              <button class="btn danger" type="submit">Sil</button>
+            </form>
+          </div>
+
+          {% if l["is_active"] == 0 %}
+            <div class="muted small">Pasif ilan eşleşmeye girmez. “Aktif Et” ile tekrar açabilirsin.</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

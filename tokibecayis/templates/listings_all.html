@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Tüm İlanlar</h2>
+
+  <div class="subcard">
+    <h3>Filtre</h3>
+
+    <form method="get" class="row">
+      <div>
+        <label>İl</label>
+        <select id="ilSelect" name="il">
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+
+      <div>
+        <label>İlçe</label>
+        <select id="ilceSelect" name="ilce" disabled>
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Mahalle</label>
+        <select id="mahalleSelect" name="mahalle" disabled>
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Oda</label>
+        <select name="oda">
+          {% set oda_val = request.args.get('oda','') %}
+          <option value="" {% if oda_val=='' %}selected{% endif %}>Hepsi</option>
+          <option value="1+1" {% if oda_val=='1+1' %}selected{% endif %}>1+1</option>
+          <option value="2+1" {% if oda_val=='2+1' %}selected{% endif %}>2+1</option>
+          <option value="3+1" {% if oda_val=='3+1' %}selected{% endif %}>3+1</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Kat</label>
+        <select name="kat">
+          {% set kat_val = request.args.get('kat','') %}
+          <option value="" {% if kat_val=='' %}selected{% endif %}>Hepsi</option>
+          {% for k in ['-3','-2','-1','0','1','2','3','4','5','6','7'] %}
+            <option value="{{ k }}" {% if kat_val==k %}selected{% endif %}>{{ k }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label>Ücret</label>
+        <select name="ucret">
+          {% set ucret_val = request.args.get('ucret','') %}
+          <option value="" {% if ucret_val=='' %}selected{% endif %}>Hepsi</option>
+          <option value="any" {% if ucret_val=='any' %}selected{% endif %}>Farketmez</option>
+          <option value="ucretsiz" {% if ucret_val=='ucretsiz' %}selected{% endif %}>Ücretsiz</option>
+          <option value="ucretli" {% if ucret_val=='ucretli' %}selected{% endif %}>Ücretli</option>
+        </select>
+      </div>
+
+      <div class="full"><button type="submit">Uygula</button></div>
+    </form>
+  </div>
+
+  {% if not listings %}
+    <p class="muted">İlan bulunamadı.</p>
+  {% else %}
+    <div class="list">
+      {% for l in listings %}
+        <div class="list-item">
+          <div class="list-title">
+            <b>{{ l["mevcut_il"] }}/{{ l["mevcut_ilce"] }} - {{ l["mevcut_mahalle"] }}</b>
+            <span class="pill">{{ l["mevcut_oda"] }}</span>
+            <span class="pill">Kat {{ l["mevcut_kat"] }}</span>
+            {% if l["is_active"] == 1 %}
+              <span class="pill ok">AKTİF</span>
+            {% else %}
+              <span class="pill warn">PASİF</span>
+            {% endif %}
+            <span class="pill">Ücret: {% set _u = l["ucret"] %}{% if not _u or _u=='any' %}Farketmez{% elif _u=='ucretli' %}Ücretli{% elif _u=='ucretsiz' %}Ücretsiz{% else %}{{ _u }}{% endif %}</span>
+          </div>
+          <div class="muted small">{{ l["mevcut_not"] or "" }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+(() => {
+  // Eğer adres.json dosyanı static klasörüne koyduysan:
+  // const ADRES_URL = "{{ url_for('static', filename='adres.json') }}";
+  // Eğer templates ile aynı seviyede "adres.json" servis ediliyorsa (önerilmez):
+  // const ADRES_URL = "/adres.json";
+  // En doğru yöntem: static/adres.json
+  const ADRES_URL = "{{ url_for('static', filename='adres.json') }}";
+
+  const ilSelect = document.getElementById("ilSelect");
+  const ilceSelect = document.getElementById("ilceSelect");
+  const mahalleSelect = document.getElementById("mahalleSelect");
+
+  // URL'den mevcut seçimler (sayfa refresh sonrası seçili gelsin)
+  const selectedIl = "{{ request.args.get('il','') }}";
+  const selectedIlce = "{{ request.args.get('ilce','') }}";
+  const selectedMahalle = "{{ request.args.get('mahalle','') }}";
+
+  let rows = []; // adres.json içeriği
+
+  function uniqSorted(arr) {
+    return [...new Set(arr.filter(Boolean))].sort((a,b) => a.localeCompare(b, 'tr'));
+  }
+
+  function fillSelect(selectEl, items, placeholderText, selectedValue = "") {
+    selectEl.innerHTML = "";
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = placeholderText;
+    selectEl.appendChild(opt0);
+
+    for (const v of items) {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      if (selectedValue && v === selectedValue) opt.selected = true;
+      selectEl.appendChild(opt);
+    }
+  }
+
+  function resetIlce() {
+    fillSelect(ilceSelect, [], "Hepsi");
+    ilceSelect.disabled = true;
+  }
+
+  function resetMahalle() {
+    fillSelect(mahalleSelect, [], "Hepsi");
+    mahalleSelect.disabled = true;
+  }
+
+  function onIlChange(forceSelectedIlce = "") {
+    const il = ilSelect.value;
+    resetIlce();
+    resetMahalle();
+
+    if (!il) return;
+
+    const ilceler = uniqSorted(rows
+      .filter(r => r.cityName === il)
+      .map(r => r.districtName)
+    );
+
+    fillSelect(ilceSelect, ilceler, "Hepsi", forceSelectedIlce);
+    ilceSelect.disabled = false;
+
+    // Eğer ilçe seçili geldiyse mahalleyi de doldur
+    if (forceSelectedIlce) onIlceChange(selectedMahalle);
+  }
+
+  function onIlceChange(forceSelectedMahalle = "") {
+    const il = ilSelect.value;
+    const ilce = ilceSelect.value;
+    resetMahalle();
+
+    if (!il || !ilce) return;
+
+    const mahalleler = uniqSorted(rows
+      .filter(r => r.cityName === il && r.districtName === ilce)
+      .map(r => r.neighborhoodName)
+    );
+
+    fillSelect(mahalleSelect, mahalleler, "Hepsi", forceSelectedMahalle);
+    mahalleSelect.disabled = false;
+  }
+
+  async function init() {
+    try {
+      const res = await fetch(ADRES_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("adres.json okunamadı: " + res.status);
+      rows = await res.json();
+
+      // İl listesini doldur
+      const iller = uniqSorted(rows.map(r => r.cityName));
+      fillSelect(ilSelect, iller, "Hepsi", selectedIl);
+
+      // Eğer URL'den il geldiyse ilçeleri doldur
+      if (selectedIl) {
+        onIlChange(selectedIlce);
+        if (selectedIlce) {
+          // onIlChange zaten mahalleyi dolduruyor
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      // İstersen kullanıcıya görsel bir uyarı da basabilirsin
+      // alert("Adres verisi yüklenemedi. adres.json yolunu kontrol et.");
+    }
+  }
+
+  ilSelect.addEventListener("change", () => onIlChange(""));
+  ilceSelect.addEventListener("change", () => onIlceChange(""));
+
+  init();
+})();
+</script>
+{% endblock %}	

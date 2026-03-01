@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Admin - Şikayetler{% endblock %}
+{% block content %}
+  <h2>Şikayetler</h2>
+
+  <div class="row">
+    <a class="btn" href="{{ url_for('admin_reports', status='open') }}">Open</a>
+    <a class="btn" href="{{ url_for('admin_reports', status='closed') }}">Closed</a>
+    <a class="btn" href="{{ url_for('admin_reports', status='all') }}">All</a>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Reporter</th>
+        <th>Target</th>
+        <th>Listing</th>
+        <th>Thread</th>
+        <th>Reason</th>
+        <th>Created</th>
+        <th>İşlem</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td><b>{{ r.status }}</b></td>
+          <td>{{ r.reporter_name or r.reporter_user_id }}</td>
+          <td>{{ r.target_name or (r.target_user_id or '-') }}</td>
+          <td>{{ r.listing_id or '-' }}</td>
+          <td>{{ r.thread_id or '-' }}</td>
+          <td style="max-width:420px;white-space:pre-wrap">{{ r.reason }}</td>
+          <td>{{ r.created_at }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin_report_set', report_id=r.id) }}">
+              {% if r.status == 'open' %}
+                <input type="hidden" name="status" value="closed">
+                <button class="btn" type="submit">Kapat</button>
+              {% else %}
+                <input type="hidden" name="status" value="open">
+                <button class="btn" type="submit">Aç</button>
+              {% endif %}
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

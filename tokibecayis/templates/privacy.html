@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Kurallar ve Kısa Bilgilendirme</h2>
+
+  <div class="subcard">
+    <p><b>Amaç:</b> TOKİ becayiş ilanlarını karşılıklı uygunlukla eşleştirmek.</p>
+    <ul class="muted">
+      <li>Kişisel veri paylaşımı yasaktır (telefon, TC, adres, IBAN vb.).</li>
+      <li>Uygulama içi mesajlaşma dışında iletişim teşvik edilmez.</li>
+      <li>{{ inactivity_days }} gün giriş yapılmazsa ilanlar pasife alınır ve eşleşmeye dahil edilmez.</li>
+      <li>Spam/taciz/uygunsuz içerik yasaktır. İhlalde engelleme uygulanabilir.</li>
+      <li>Şifre 5 kez yanlış girilirse güvenlik amacıyla hesap ve tüm veriler silinir.</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

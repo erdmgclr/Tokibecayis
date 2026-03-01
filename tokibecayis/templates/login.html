@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Giriş</h2>
+  <div class="subcard muted">
+    <b>Not:</b> Şifre 5 kez yanlış girilirse hesap ve tüm veriler silinir. (Güvenlik politikası)
+  </div>
+  <form method="post" class="stack">
+    <label>Kullanıcı Adı</label>
+    <input name="username" required>
+
+    <label>Şifre</label>
+    <input name="password" type="password" required>
+
+    <button type="submit">Giriş Yap</button>
+  </form>
+  <p class="muted">Hesabın yoksa: <a href="{{ url_for('register') }}">Kayıt Ol</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Tokibecayis{% endblock %}</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a href="{{ url_for('home') }}">Tokibecayis</a>
+    </div>
+
+    <nav class="nav">
+      {% if session.get("user_id") %}
+        <a href="{{ url_for('dashboard') }}">İlanlarım</a>
+        <a href="{{ url_for('listings_all') }}">Tüm İlanlar</a>
+        <a href="{{ url_for('matches') }}">Eşleşmeler</a>
+        <a href="{{ url_for('inbox') }}" class="msg-link">Mesajlar{% if has_unread %}<span class="msg-badge" aria-label="Yeni mesaj"></span>{% endif %}</a>
+        <a href="{{ url_for('privacy') }}">KVKK</a>
+
+        {% if g.is_admin %}
+          <a class="admin-link" href="{{ url_for('admin_dashboard') }}">Admin</a>
+        {% endif %}
+
+        <a href="{{ url_for('logout') }}">Çıkış</a>
+      {% else %}
+        <a href="{{ url_for('privacy') }}">KVKK</a>
+        <a href="{{ url_for('login') }}">Giriş</a>
+        <a href="{{ url_for('register') }}">Kayıt</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero-header">
+      <h1>TOKİ Becayiş Platformu</h1>
+      <div class="active-count">Aktif İlan: <b>{{ active_listings_count }}</b></div>
+    </section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flashes">
+          {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

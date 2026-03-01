@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>{% if mode=="edit" %}İlan Düzenle{% else %}Yeni İlan{% endif %}</h2>
+
+  <div class="subcard">
+    <b>Uyarı</b>
+    <div class="muted">
+      Kişisel veri paylaşımı yasaktır (telefon, TC, adres, IBAN vb.). Sadece uygulama içi mesajlaşma kullan.
+      {{ inactivity_days }} gün giriş yapmazsan ilanların pasife alınır ve eşleşmeye girmez.
+    </div>
+  </div>
+
+  <form method="post" class="stack" id="listingForm">
+
+    <div class="subcard">
+      <h3>Mevcut Daire</h3>
+
+      <div class="row">
+        <div class="full">
+          <label>İl</label>
+          <select id="mevcut_il" name="mevcut_il" required></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>İlçe</label>
+          <select id="mevcut_ilce" name="mevcut_ilce" required></select>
+        </div>
+        <div>
+          <label>Mahalle</label>
+          <select id="mevcut_mahalle" name="mevcut_mahalle" required></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Bölge (sadece rakam)</label>
+          <input id="mevcut_bolge" name="mevcut_bolge" inputmode="numeric" pattern="[0-9]*">
+        </div>
+        <div>
+          <label>Etap (sadece rakam)</label>
+          <input id="mevcut_etap" name="mevcut_etap" inputmode="numeric" pattern="[0-9]*">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Kat</label>
+          <select id="mevcut_kat" name="mevcut_kat" required>
+            <option value="">Seçiniz</option>
+            <option>-3</option><option>-2</option><option>-1</option>
+            <option>0</option><option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option><option>7</option>
+          </select>
+        </div>
+        <div>
+          <label>Oda</label>
+          <select id="mevcut_oda" name="mevcut_oda" required>
+            <option value="">Seçiniz</option>
+            <option>2+1</option>
+            <option>3+1</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Mevcut Daire Notu</label>
+      <textarea name="mevcut_not" id="mevcut_not" placeholder="Örn: anahtar teslim alındı"></textarea>
+    </div>
+
+    <div class="subcard">
+      <h3>Değişim İstenen Daire</h3>
+
+      <!-- Ücret + İl -->
+      <div class="row">
+        <div>
+          <label>Ücret</label>
+          <select id="ucret" name="ucret">
+            <option value="any">Farketmez</option>
+            <option value="ucretsiz">Ücretsiz</option>
+            <option value="ucretli">Ücretli</option>
+          </select>
+        </div>
+        <div>
+          <label>İl</label>
+          <select id="hedef_il" name="hedef_il">
+            <option value="any">Farketmez</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- İlçe + Mahalle -->
+      <div class="row">
+        <div>
+          <label>İlçe (çoklu)</label>
+          <div class="ms" id="ms_hedef_ilce" data-name="hedef_ilce"></div>
+        </div>
+        <div>
+          <label>Mahalle (çoklu)</label>
+          <div class="ms" id="ms_hedef_mahalle" data-name="hedef_mahalle"></div>
+        </div>
+      </div>
+
+      <!-- Bölge + Etap -->
+      <div class="row">
+        <div>
+          <label>Bölge (sadece rakam)</label>
+          <input id="hedef_bolge" name="hedef_bolge" inputmode="numeric" pattern="[0-9]*" placeholder="Farketmez için boş bırak">
+        </div>
+        <div>
+          <label>Etap (sadece rakam)</label>
+          <input id="hedef_etap" name="hedef_etap" inputmode="numeric" pattern="[0-9]*" placeholder="Farketmez için boş bırak">
+        </div>
+      </div>
+
+      <!-- Oda + Kat -->
+      <div class="row">
+        <div>
+          <label>Oda</label>
+          <select id="hedef_oda" name="hedef_oda">
+            <option value="any">Farketmez</option>
+            <option>1+1</option><option>2+1</option><option>3+1</option>
+          </select>
+        </div>
+        <div>
+          <label>Kat (çoklu)</label>
+          <div class="ms" id="ms_hedef_kat" data-name="hedef_kat"></div>
+        </div>
+      </div>
+
+      <label>Değişim Talebi Notu</label>
+      <textarea name="hedef_not" id="hedef_not"></textarea>
+    </div>
+
+    <div class="actions">
+      <button type="submit">{% if mode=="edit" %}Güncelle{% else %}İlanı Kaydet{% endif %}</button>
+      <a class="btn ghost" href="{{ url_for('dashboard') }}">Panele Dön</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  window.__EDIT__ = {{ "true" if mode=="edit" else "false" }};
+  window.__LISTING__ = {{ listing|tojson if listing else "null" }};
+</script>
+{% endblock %}

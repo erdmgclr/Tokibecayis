@@ -1,0 +1,50 @@
+[
+  {
+    "mevcut": {
+      "il": "HATAY",
+      "ilce": "DEFNE",
+      "mahalle": "HÜSEYİNLİ",
+      "bolge": "5",
+      "etap": "2",
+      "kat": "0",
+      "oda": "3+1",
+      "aciklama": "anahtar teslim alındı"
+    },
+    "hedef": {
+      "il": "HATAY",
+      "ilce": "ANTAKYA",
+      "mahalle": "any",
+      "bolge": "any",
+      "etap": "any",
+      "kat": "any",
+      "oda": "any"
+    },
+    "ucret": "any",
+    "aciklama": "",
+    "ts": 1772221851.948312
+  },
+  {
+    "mevcut": {
+      "il": "HATAY",
+      "ilce": "DEFNE",
+      "mahalle": "HÜSEYİNLİ",
+      "bolge": "5",
+      "etap": "2",
+      "kat": "0",
+      "oda": "3+1",
+      "aciklama": "anahtar teslim alındı"
+    },
+    "hedef": {
+      "il": "HATAY",
+      "ilce": "ANTAKYA",
+      "mahalle": "any",
+      "bolge": "any",
+      "etap": "any",
+      "kat": "any",
+      "oda": "any"
+    },
+    "ucret": "any",
+    "aciklama": "",
+    "ts": 1772221869.744897
+  }
+]

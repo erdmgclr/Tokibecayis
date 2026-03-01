@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}Admin Panel{% endblock %}
+{% block content %}
+  <h2>Admin Panel</h2>
+
+  <div class="cards">
+    <div class="card">
+      <div class="k">Açık Şikayet</div>
+      <div class="v">{{ open_reports }}</div>
+      <a class="btn" href="{{ url_for('admin_reports') }}">Şikayetleri Gör</a>
+    </div>
+
+    <div class="card">
+      <div class="k">Kullanıcı</div>
+      <div class="v">{{ users_count }}</div>
+      <a class="btn" href="{{ url_for('admin_users') }}">Kullanıcılar</a>
+    </div>
+
+    <div class="card">
+      <div class="k">İlan</div>
+      <div class="v">{{ listings_count }}</div>
+      <a class="btn" href="{{ url_for('listings_all') }}">İlanlar (User View)</a>
+    </div>
+
+    <div class="card">
+      <div class="k">Konuşma</div>
+      <div class="v">{{ threads_count }}</div>
+      <a class="btn" href="{{ url_for('admin_messages') }}">Mesajlar</a>
+    </div>
+  </div>
+{% endblock %}

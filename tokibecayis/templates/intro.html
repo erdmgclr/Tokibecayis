@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Hoş geldin 👋</h2>
+
+  <div class="subcard">
+    <p><b>Tokibecayis</b>, becayiş ilanlarını uygun eşleşmelerle buluşturmak için tasarlanmıştır.</p>
+    <ul class="muted">
+      <li>İlan ekleyip “Eşleşmeler” üzerinden uygun ilanlarla mesajlaşabilirsin.</li>
+      <li><b>Kişisel veri paylaşımı yasaktır</b> (telefon, TC, adres, IBAN vb.).</li>
+      <li>{{ inactivity_days }} gün giriş yapmazsan ilanların otomatik <b>pasif</b> olur ve eşleşmeye girmez.</li>
+    </ul>
+  </div>
+
+  <form method="post" action="{{ url_for('intro_accept') }}">
+    <button type="submit">Anladım, Devam Et</button>
+  </form>
+</div>
+{% endblock %}

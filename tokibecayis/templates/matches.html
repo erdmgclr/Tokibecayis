@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Eşleşmeler</h2>
+  <div class="muted">Baz ilan: <b>{{ base.mevcut_il }}/{{ base.mevcut_ilce }} - {{ base.mevcut_mahalle }}</b></div>
+
+  <div class="subcard">
+    <h3>Filtre</h3>
+    <form method="get" class="row">
+      <div>
+        <label>Ücret</label>
+        <select name="ucret">
+          <option value="">Hepsi</option>
+          <option value="any">Farketmez</option>
+          <option value="ucretsiz">Ücretsiz</option>
+          <option value="ucretli">Ücretli</option>
+        </select>
+      </div>
+      <div>
+        <label>Oda</label>
+        <select name="oda">
+          <option value="">Hepsi</option>
+          <option>1+1</option><option>2+1</option><option>3+1</option>
+        </select>
+      </div>
+      <div>
+        <label>Kat</label>
+        <select name="kat">
+          <option value="">Hepsi</option>
+          <option>-3</option><option>-2</option><option>-1</option><option>0</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option>
+          <option>5</option><option>6</option><option>7</option>
+        </select>
+      </div>
+      <div class="full"><button type="submit">Uygula</button></div>
+    </form>
+  </div>
+
+  {% if not matches_list %}
+    <p class="muted">Şu an karşılıklı eşleşme yok.</p>
+  {% else %}
+    <div class="list">
+      {% for b in matches_list %}
+        <div class="list-item">
+          <div class="list-title">
+            <b>{{ b["mevcut_il"] }}/{{ b["mevcut_ilce"] }} - {{ b["mevcut_mahalle"] }}</b>
+            <span class="pill">{{ b["mevcut_oda"] }}</span>
+            <span class="pill">Kat {{ b["mevcut_kat"] }}</span>
+            <span class="pill">Ücret: {% set _u = b["ucret"] %}{% if not _u or _u=='any' %}Farketmez{% elif _u=='ucretli' %}Ücretli{% elif _u=='ucretsiz' %}Ücretsiz{% else %}{{ _u }}{% endif %}</span>
+          </div>
+
+          <div class="muted">Mevcut not: {{ b["mevcut_not"] or "-" }}</div>
+          <div class="muted">Talep not: {{ b["hedef_not"] or "-" }}</div>
+
+          <div class="list-actions">
+            <form method="post" action="{{ url_for('start_thread') }}">
+              <input type="hidden" name="listing_a_id" value="{{ base['id'] }}">
+              <input type="hidden" name="listing_b_id" value="{{ b['id'] }}">
+              <input type="hidden" name="other_user_id" value="{{ b['user_id'] }}">
+              <button class="btn" type="submit">Mesajlaş</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

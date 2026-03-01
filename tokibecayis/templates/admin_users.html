@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}Admin - Kullanıcılar{% endblock %}
+{% block content %}
+  <h2>Kullanıcılar</h2>
+
+  <form method="get" class="row">
+    <input name="q" placeholder="Kullanıcı ara (username)" value="{{ q }}" />
+    <button class="btn" type="submit">Ara</button>
+  </form>
+
+  <p class="muted">
+    Silme işlemi: kullanıcının <b>hesabı + ilanları + mesajları + threadleri + block + rapor</b> hard delete olur.
+  </p>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Created</th>
+        <th>Last Login</th>
+        <th>Aksiyon</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in rows %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.role }}</td>
+          <td>{{ u.created_at }}</td>
+          <td>{{ u.last_login_at or '-' }}</td>
+          <td>
+            {% if u.id == session.get("user_id") %}
+              <span class="muted">Admin (kendin)</span>
+            {% else %}
+              <form method="post" action="{{ url_for('admin_user_delete', user_id=u.id) }}"
+                    onsubmit="return confirm('Bu kullanıcı ve tüm kayıtları SİLİNECEK. Emin misin?');">
+                <button class="btn danger" type="submit">Sil</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

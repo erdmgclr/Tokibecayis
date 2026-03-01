@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Mesaj Kutusu</h2>
+
+  {% if not threads %}
+    <p class="muted">Henüz konuşma yok.</p>
+  {% else %}
+    <div class="list">
+      {% for t in threads %}
+        {% set other_name = t.user2_name if t.user1_id==me_id else t.user1_name %}
+        <div class="list-item">
+          <div class="list-title">
+            <b>{{ other_name }}</b>
+            <span class="pill">Thread #{{ t.id }}</span>
+          </div>
+          <div class="muted small">{{ t.last_body or "—" }}</div>
+          <div class="list-actions">
+            <a class="btn" href="{{ url_for('thread_view', thread_id=t.id) }}">Aç</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

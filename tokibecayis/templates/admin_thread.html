@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Admin - Thread{% endblock %}
+{% block content %}
+  <h2>Thread #{{ thread.id }}</h2>
+  <p class="muted">Katılımcılar: <b>{{ u1.username }}</b> ve <b>{{ u2.username }}</b></p>
+
+  <div class="thread-box">
+    {% for m in msgs %}
+      <div class="msg">
+        <div class="meta">{{ m.created_at }} — <b>{{ m.sender_name }}</b></div>
+        <div class="body" style="white-space:pre-wrap">{{ m.body }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

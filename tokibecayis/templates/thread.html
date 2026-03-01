@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Mesajlaşma</h2>
+
+  <div class="subcard">
+    <b>Kural:</b>
+    <div class="muted">
+      Telefon, TC, adres, IBAN vb. kişisel veri paylaşımı yasaktır. Sadece ilan detayları üzerinden yazışın.
+    </div>
+  </div>
+
+  <div class="list-actions" style="margin-top:10px;">
+    <form method="post" action="{{ url_for('user_block') }}">
+      <input type="hidden" name="thread_id" value="{{ thread['id'] }}">
+      <button class="btn danger" type="submit" onclick="return confirm('Bu kullanıcı engellensin mi?')">Engelle</button>
+    </form>
+
+    <button class="btn ghost" type="button" onclick="document.getElementById('reportBox').style.display='block'">Raporla</button>
+  </div>
+
+  <div id="reportBox" class="subcard" style="display:none; margin-top:12px;">
+    <h3>Raporla</h3>
+    <form method="post" action="{{ url_for('user_report') }}" class="stack">
+      <input type="hidden" name="thread_id" value="{{ thread['id'] }}">
+      <label>Neden</label>
+      <textarea name="reason" placeholder="Örn: spam / hakaret / dolandırıcılık şüphesi"></textarea>
+      <div class="actions">
+        <button type="submit">Gönder</button>
+        <button type="button" class="btn ghost" onclick="document.getElementById('reportBox').style.display='none'">İptal</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="chat">
+    {% if not messages %}
+      <div class="muted">Henüz mesaj yok. İlk mesajı sen at.</div>
+    {% else %}
+      {% for m in messages %}
+        <div class="msg {{ 'me' if m['from_user_id']==me_id else 'other' }}">
+          <div class="msg-meta">{{ m["from_username"] }} • {{ m["created_at"][:19].replace('T',' ') }}</div>
+          <div class="msg-body">{{ m["body"] }}</div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <form method="post" action="{{ url_for('thread_send', thread_id=thread['id']) }}" class="chatbox">
+    <input name="body" placeholder="Mesaj yaz..." maxlength="2000" required>
+    <button type="submit">Gönder</button>
+  </form>
+</div>
+{% endblock %}
